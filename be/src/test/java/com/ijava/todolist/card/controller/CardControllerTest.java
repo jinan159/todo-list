@@ -79,7 +79,7 @@ class CardControllerTest {
         }
 
         @Nested
-        @DisplayName("")
+        @DisplayName("칼럼 id 가 없으면")
         class ColumnIdNotExistTest {
 
             @Test
