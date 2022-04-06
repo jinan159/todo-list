@@ -17,6 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class CardRepositoryTest {
 
+    private static final long COLUMN_ID = 1L;
+
     @Autowired
     private CardRepository cardRepository;
 
@@ -36,7 +38,7 @@ class CardRepositoryTest {
             @Test
             void 새로_등록하고_id_값이_추가된_카드를_반환한다() {
                 // given
-                Card card = createCardWithColumnsId(1L);
+                Card card = createCardWithColumnsId(COLUMN_ID);
 
                 // when
                 Card savedCard = cardRepository.save(card);
@@ -60,12 +62,11 @@ class CardRepositoryTest {
             @Test
             void 카드_목록을_반환한다() {
                 // given
-                Long columnsId = 1L;
-                Card savedCard = saveCardWithColumnsId(columnsId);
+                Card savedCard = saveCardWithColumnsId(COLUMN_ID);
                 int expectedSize = 1;
 
                 // when
-                Optional<List<Card>> findResult = cardRepository.findByColumnId(columnsId);
+                Optional<List<Card>> findResult = cardRepository.findByColumnId(COLUMN_ID);
 
                 // then
                 assertThat(findResult.isPresent()).isTrue();
@@ -88,12 +89,11 @@ class CardRepositoryTest {
             @Test
             void 카드_개수를_반환한다() {
                 // given
-                Long columnsId = 1L;
                 int expectedCount = 1;
-                saveCardWithColumnsId(columnsId);
+                saveCardWithColumnsId(COLUMN_ID);
 
                 // when
-                Optional<Integer> getCountResult = cardRepository.getCountOfCardsOnColumns(columnsId);
+                Optional<Integer> getCountResult = cardRepository.getCountOfCardsOnColumns(COLUMN_ID);
 
                 // then
                 assertThat(getCountResult.isPresent()).isTrue();
@@ -113,7 +113,7 @@ class CardRepositoryTest {
             @Test
             void 조회된_카드를_반환한다() {
                 // given
-                Card savedCard = saveCardWithColumnsId(1L);
+                Card savedCard = saveCardWithColumnsId(COLUMN_ID);
 
                 // when
                 Optional<Card> findResult = cardRepository.findById(savedCard.getId());

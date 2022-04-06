@@ -19,6 +19,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 class CardServiceTest {
 
+    private static final long COLUMN_ID = 1L;
+
     @Autowired
     private CardRepository cardRepository;
 
@@ -41,11 +43,10 @@ class CardServiceTest {
             @Test
             void 카드_목록을_반환한다() {
                 // given
-                Long columnId = 1L;
-                Card savedCard = saveCardWithColumnsId(columnId);
+                Card savedCard = saveCardWithColumnsId(COLUMN_ID);
 
                 // when
-                List<Card> savedResult = cardService.findCardList(columnId);
+                List<Card> savedResult = cardService.findCardList(COLUMN_ID);
 
                 // then
                 assertThat(savedResult).isNotNull();
@@ -82,12 +83,11 @@ class CardServiceTest {
             @Test
             void 카드_개수를_반환한다() {
                 // given
-                Long columnsId = 1L;
                 int expectedCount = 1;
-                saveCardWithColumnsId(columnsId);
+                saveCardWithColumnsId(COLUMN_ID);
 
                 // when
-                int getCountResult = cardService.getCountOfCardsOnColumns(columnsId);
+                int getCountResult = cardService.getCountOfCardsOnColumns(COLUMN_ID);
 
                 // then
                 assertThat(getCountResult).isEqualTo(expectedCount);
@@ -100,10 +100,11 @@ class CardServiceTest {
             @Test
             void 개수_0_을_반환한다_() {
                 // given
+                Long nullColumnId = null;
                 int expectedCount = 0;
 
                 // when
-                int getCountResult = cardService.getCountOfCardsOnColumns(null);
+                int getCountResult = cardService.getCountOfCardsOnColumns(nullColumnId);
 
                 // then
                 assertThat(getCountResult).isEqualTo(expectedCount);
@@ -152,7 +153,7 @@ class CardServiceTest {
     }
 
     private Card saveCard() {
-        return saveCardWithColumnsId(1L);
+        return saveCardWithColumnsId(COLUMN_ID);
     }
 
     private Card saveCardWithColumnsId(Long columnsId) {
