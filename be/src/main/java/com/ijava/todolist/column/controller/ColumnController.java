@@ -6,27 +6,20 @@ import com.ijava.todolist.column.domain.Column;
 import com.ijava.todolist.column.service.ColumnService;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
 @RestController
 public class ColumnController {
 
     private final ColumnService columnService;
     private final CardService cardService;
 
-    @Autowired
-    public ColumnController(ColumnService columnService, CardService cardService) {
-        this.columnService = columnService;
-        this.cardService = cardService;
-    }
-
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     @GetMapping("/columns")
     public List<ColumnResponse> columnList() {
         List<Column> columnList = columnService.findColumns();
