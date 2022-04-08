@@ -17,6 +17,11 @@ public class CardService {
 
     private final CardRepository cardRepository;
 
+    /**
+     * 특정 칼럼에 속한 카드 목록 조회
+     * @param columnsId
+     * @return
+     */
     public List<Card> findCardList(Long columnsId) {
         if (columnsId == null) return Collections.emptyList();
 
@@ -24,12 +29,22 @@ public class CardService {
                 .orElseGet(Collections::emptyList);
     }
 
+    /**
+     * 특정 칼럼에 속한 카드 개수 조회
+     * @param columnsId
+     * @return
+     */
     public int getCountOfCardsOnColumns(Long columnsId) {
         return cardRepository.getCountOfCardsOnColumns(columnsId)
                 .orElse(CARD_COUNT_DEFAULT);
 
     }
 
+    /**
+     * id 로 카드 조회
+     * @param id
+     * @return
+     */
     public Card findCardById(Long id) {
         return cardRepository.findById(id)
                 .orElseThrow(CardNotFoundException::new);
