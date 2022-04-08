@@ -26,5 +26,4 @@ public class CardController {
                 .sorted(Comparator.comparing(CardResponse::getCreatedDate))
                 .collect(Collectors.toUnmodifiableList());
     }
-
 }
