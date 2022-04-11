@@ -1,11 +1,16 @@
 package com.ijava.todolist.card.service;
 
+import com.ijava.todolist.card.controller.dto.CardCreateRequest;
 import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.exception.CardNotFoundException;
 import com.ijava.todolist.card.repository.CardRepository;
+import com.ijava.todolist.history.Action;
+import com.ijava.todolist.history.service.HistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,6 +21,7 @@ public class CardService {
     private final static int CARD_COUNT_DEFAULT = 0;
 
     private final CardRepository cardRepository;
+    private final HistoryService historyService;
 
     /**
      * 특정 칼럼에 속한 카드 목록 조회
@@ -48,5 +54,21 @@ public class CardService {
     public Card findCardById(Long id) {
         return cardRepository.findById(id)
                 .orElseThrow(CardNotFoundException::new);
+    }
+
+    /**
+     * 카드 저장 요청 시, 카드 생성
+     * @param request
+     * @return
+     */
+    @Transactional
+    public Card save(CardCreateRequest request) {
+        LocalDateTime createdDate = LocalDateTime.now();
+        Card newCard = new Card(request.getTitle(), request.getContent(), request.getColumnId(), createdDate, createdDate);
+        Card savedCard = cardRepository.save(newCard);
+
+        historyService.store(savedCard.getId(), savedCard.getColumnsId(), Action.ADD, LocalDateTime.now());
+
+        return savedCard;
     }
 }

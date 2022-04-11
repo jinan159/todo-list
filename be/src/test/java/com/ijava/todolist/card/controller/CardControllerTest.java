@@ -1,20 +1,21 @@
 package com.ijava.todolist.card.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ijava.todolist.card.controller.dto.CardCreateRequest;
 import com.ijava.todolist.card.domain.Card;
+import com.ijava.todolist.card.exception.CardNotSavedException;
 import com.ijava.todolist.card.service.CardService;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.hamcrest.SelfDescribing;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,17 +25,22 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CardController.class)
 class CardControllerTest {
+
+    private static final String CARD_CREATE_URL = "/cards";
 
     @Autowired
     private MockMvc mvc;
 
     @MockBean
     private CardService cardService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Nested
     @DisplayName("카드 목록 조회 요청이 들어왔을 때(GET /cards)")
@@ -94,5 +100,45 @@ class CardControllerTest {
                 result.andExpect(status().isBadRequest());
             }
         }
+    }
+
+    @Nested
+    @DisplayName("카드 입력 요청이 들어왔을 때(POST /cards)")
+    class POSTCardsTest {
+
+        @Nested
+        @DisplayName("칼럼 id 와 제목이 정상적으로 들어온 경우")
+        class SuccessTest {
+
+            @Test
+            void 입력된_id_와_함께_카드_정보를_반환한다() throws Exception {
+                // given
+                String title = "카드 제목";
+                String content = "카드 내용입니다.";
+                Long columnId = 1L;
+                String requestBody = objectMapper.writeValueAsString(new CardCreateRequest(columnId, title, content));
+                Card expectedCard = createCard(title, content, columnId, LocalDateTime.now());
+                given(cardService.save(any())).willReturn(expectedCard);
+
+
+                // when
+                ResultActions result = mvc.perform(
+                        post(CARD_CREATE_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody)
+                );
+
+                // then
+                result.andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("$.cardId", is(expectedCard.getId().intValue())))
+                        .andExpect(jsonPath("$.title", is(expectedCard.getTitle())))
+                        .andExpect(jsonPath("$.content", is(expectedCard.getContent())));
+            }
+        }
+    }
+
+    private Card createCard(String title, String content, Long columnId, LocalDateTime createdDate) {
+        return new Card(1L, title, content, columnId, createdDate, createdDate);
     }
 }

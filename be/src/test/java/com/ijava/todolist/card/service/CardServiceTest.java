@@ -1,5 +1,6 @@
 package com.ijava.todolist.card.service;
 
+import com.ijava.todolist.card.controller.dto.CardCreateRequest;
 import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.exception.CardNotFoundException;
 import com.ijava.todolist.card.repository.CardRepository;
@@ -148,6 +149,35 @@ class CardServiceTest {
                 assertThatThrownBy(() -> cardService.findCardById(notSavedId))
                         .isInstanceOf(CardNotFoundException.class)
                         .hasMessageContaining(notFoundMessage);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("카드를 입력할 때")
+    class CardSaveTest{
+
+        @Nested
+        @DisplayName("정보가 정상적으로 넘어오면")
+        class SuccessTest {
+
+            @Test
+            void 카드를_저장하고_저장된_카드를_반환한다() {
+                // given
+                Long expectedColumnId = 1L;
+                String expectedTitle = "카드 제목";
+                String expectedContent = "카드 내용입니다.";
+                CardCreateRequest request = new CardCreateRequest(expectedColumnId, expectedTitle, expectedContent);
+
+                // when
+                Card savedCard = cardService.save(request);
+
+                // then
+                assertThat(savedCard).isNotNull();
+                assertThat(savedCard.getId()).isNotNull();
+                assertThat(savedCard.getColumnsId()).isEqualTo(expectedColumnId);
+                assertThat(savedCard.getTitle()).isEqualTo(expectedTitle);
+                assertThat(savedCard.getContent()).isEqualTo(expectedContent);
             }
         }
     }

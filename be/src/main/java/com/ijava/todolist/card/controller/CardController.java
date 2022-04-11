@@ -1,13 +1,12 @@
 package com.ijava.todolist.card.controller;
 
+import com.ijava.todolist.card.controller.dto.CardCreateRequest;
 import com.ijava.todolist.card.controller.dto.CardResponse;
+import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.service.CardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,5 +24,11 @@ public class CardController {
                 .map(CardResponse::from)
                 .sorted(Comparator.comparing(CardResponse::getCreatedDate))
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    @PostMapping("/cards")
+    public CardResponse createCard(@RequestBody CardCreateRequest cardCreateRequest) {
+        Card save = cardService.save(cardCreateRequest);
+        return CardResponse.from(save);
     }
 }
