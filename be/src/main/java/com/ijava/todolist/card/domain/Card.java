@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 
@@ -28,11 +29,7 @@ public class Card {
     }
 
     public Card(String title, String content, Long columnsId, LocalDateTime createdDate, LocalDateTime modifiedDate) {
-        this.title = title;
-        this.content = content;
-        this.columnsId = columnsId;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
+        this(null, title, content, columnsId, createdDate, modifiedDate);
     }
 
     public void setId(Long id) {
