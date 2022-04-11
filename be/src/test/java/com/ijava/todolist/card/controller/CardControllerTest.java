@@ -37,7 +37,7 @@ class CardControllerTest {
     private CardService cardService;
 
     @Nested
-    @DisplayName("카드 입력 요청이 들어왔을 때(GET /cards)")
+    @DisplayName("카드 목록 조회 요청이 들어왔을 때(GET /cards)")
     class GETCardsTest {
 
         @Nested
