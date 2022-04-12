@@ -1,7 +1,6 @@
 package com.ijava.todolist.card.controller;
 
 import com.ijava.todolist.card.controller.dto.*;
-import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.service.CardActionService;
 import com.ijava.todolist.card.service.CardService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +28,7 @@ public class CardController {
     }
 
     @PostMapping("/cards")
+    @ResponseStatus(value = HttpStatus.CREATED)
     public CardResponse createCard(@RequestBody CardCreateRequest cardCreateRequest) {
         return cardActionService.add(cardCreateRequest);
     }
