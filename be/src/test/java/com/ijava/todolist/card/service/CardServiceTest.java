@@ -231,10 +231,10 @@ class CardServiceTest {
             @Test
             void 카드의_칼럼을_변경하고_변경_전후_칼럼_id_정보를_반환한다() {
                 // given
-                Card card = saveCard();
-                Long cardId = card.getId();
-                Long beforeColumnId = card.getColumnsId();
-                Long afterColumnId = 2L;
+                Card savedCard = saveCard();
+                Long cardId = savedCard.getId();
+                Long beforeColumnId = savedCard.getColumnsId();
+                Long afterColumnId = beforeColumnId + 1;
                 CardMoveRequest cardMoveRequest = new CardMoveRequest(cardId, afterColumnId);
 
                 // when

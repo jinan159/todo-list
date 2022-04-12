@@ -83,34 +83,27 @@ public class CardService {
      * @return
      */
     public Card updateCard(Long cardId, CardUpdateRequest updateRequest) {
-        Card savedCard = cardRepository.findById(cardId)
+        Card updateTargetCard = cardRepository.findById(cardId)
                 .orElseThrow(CardNotFoundException::new);
 
-        Card updatedCard = new Card(
-                savedCard.getId(),
-                updateRequest.getTitle(),
-                updateRequest.getContent(),
-                savedCard.getColumnsId(),
-                savedCard.getCreatedDate(),
-                LocalDateTime.now()
-        );
+        updateTargetCard.updateTitle(updateRequest.getTitle());
+        updateTargetCard.updateContent(updateRequest.getContent());
+        updateTargetCard.changeModifiedDate();
 
-        return cardRepository.save(updatedCard);
+        return cardRepository.save(updateTargetCard);
     }
 
     public CardMovedResponse moveCard(CardMoveRequest cardMoveRequest) {
-        Card savedCard = cardRepository.findById(cardMoveRequest.getCardId())
+        Card moveTargetCard = cardRepository.findById(cardMoveRequest.getCardId())
                 .orElseThrow(CardNotFoundException::new);
 
-        Card updatedCard = cardRepository.save(new Card(
-                savedCard.getId(),
-                savedCard.getTitle(),
-                savedCard.getContent(),
-                cardMoveRequest.getColumnId(),
-                savedCard.getCreatedDate(),
-                LocalDateTime.now()
-        ));
+        Long oldColumnId = moveTargetCard.getColumnsId();
 
-        return new CardMovedResponse(updatedCard.getId(), savedCard.getColumnsId(), updatedCard.getColumnsId());
+        moveTargetCard.moveColumn(cardMoveRequest.getColumnId());
+        moveTargetCard.changeModifiedDate();
+
+        Card updatedCard = cardRepository.save(moveTargetCard);
+
+        return new CardMovedResponse(updatedCard.getId(), oldColumnId, updatedCard.getColumnsId());
     }
 }

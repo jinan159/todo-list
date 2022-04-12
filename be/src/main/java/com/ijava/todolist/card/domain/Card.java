@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 public class Card {
 
     private Long id;
-    private final String title;
-    private final String content;
-    private final Long columnsId;
+    private String title;
+    private String content;
+    private Long columnsId;
     private final LocalDateTime createdDate;
-    private final LocalDateTime modifiedDate;
+    private LocalDateTime modifiedDate;
 
     public Card(Long id, String title, String content, Long columnsId, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
@@ -35,4 +35,21 @@ public class Card {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public void moveColumn(Long columnsId) {
+        this.columnsId = columnsId;
+    }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void changeModifiedDate() {
+        this.modifiedDate = LocalDateTime.now();
+    }
+
 }
