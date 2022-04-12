@@ -1,6 +1,8 @@
 package com.ijava.todolist.card.service;
 
 import com.ijava.todolist.card.controller.dto.CardCreateRequest;
+import com.ijava.todolist.card.controller.dto.CardMoveRequest;
+import com.ijava.todolist.card.controller.dto.CardMovedResponse;
 import com.ijava.todolist.card.controller.dto.CardUpdateRequest;
 import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.exception.CardNotFoundException;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -93,5 +96,21 @@ public class CardService {
         );
 
         return cardRepository.save(updatedCard);
+    }
+
+    public CardMovedResponse moveCard(CardMoveRequest cardMoveRequest) {
+        Card savedCard = cardRepository.findById(cardMoveRequest.getCardId())
+                .orElseThrow(CardNotFoundException::new);
+
+        Card updatedCard = cardRepository.save(new Card(
+                savedCard.getId(),
+                savedCard.getTitle(),
+                savedCard.getContent(),
+                cardMoveRequest.getColumnId(),
+                savedCard.getCreatedDate(),
+                LocalDateTime.now()
+        ));
+
+        return new CardMovedResponse(updatedCard.getId(), savedCard.getColumnsId(), updatedCard.getColumnsId());
     }
 }

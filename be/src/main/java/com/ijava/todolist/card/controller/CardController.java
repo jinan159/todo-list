@@ -1,8 +1,6 @@
 package com.ijava.todolist.card.controller;
 
-import com.ijava.todolist.card.controller.dto.CardCreateRequest;
-import com.ijava.todolist.card.controller.dto.CardResponse;
-import com.ijava.todolist.card.controller.dto.CardUpdateRequest;
+import com.ijava.todolist.card.controller.dto.*;
 import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.service.CardService;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +36,10 @@ public class CardController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void updateCard(@PathVariable("id") Long id, @RequestBody CardUpdateRequest updateRequest) {
         cardService.updateCard(id, updateRequest);
+    }
+
+    @PatchMapping("/cards")
+    public CardMovedResponse moveCard(@RequestBody CardMoveRequest cardMoveRequest) {
+        return cardService.moveCard(cardMoveRequest);
     }
 }

@@ -1,7 +1,10 @@
 package com.ijava.todolist.card.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ijava.todolist.card.controller.dto.CardCreateRequest;
+import com.ijava.todolist.card.controller.dto.CardMoveRequest;
+import com.ijava.todolist.card.controller.dto.CardMovedResponse;
 import com.ijava.todolist.card.controller.dto.CardUpdateRequest;
 import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.service.CardService;
@@ -163,6 +166,42 @@ class CardControllerTest {
 
                 // then
                 result.andExpect(status().isNoContent());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("카드 이동 요청이 들어왔을 때(PATCH /cards)")
+    class CardMoveTest {
+
+        @Nested
+        @DisplayName("카드 id 와 이동할 칼럼 id 가 정상적으로 들어오면")
+        class SuccessTest {
+
+            @Test
+            void 카드의_칼럼을_변경하고_변경_전후_칼럼_id_정보를_반환한다() throws Exception {
+                // given
+                Long cardId = 1L;
+                Long beforeColumnId = 1L;
+                Long afterColumnId = 2L;
+                String requestBody = objectMapper.writeValueAsString(new CardMoveRequest(cardId, beforeColumnId));
+                given(cardService.moveCard(any())).willReturn(new CardMovedResponse(cardId, beforeColumnId, afterColumnId));
+
+                // when
+                ResultActions result = mvc.perform(
+                        patch("/cards")
+                                .content(requestBody)
+                                .contentType(MediaType.APPLICATION_JSON)
+                );
+
+                // then
+                result.andExpect(status().isOk())
+                        .andExpect(jsonPath("$.cardId").exists())
+                        .andExpect(jsonPath("$.oldColumn").exists())
+                        .andExpect(jsonPath("$.newColumn").exists())
+                        .andExpect(jsonPath("$.cardId", is(cardId.intValue())))
+                        .andExpect(jsonPath("$.oldColumn", is(beforeColumnId.intValue())))
+                        .andExpect(jsonPath("$.newColumn", is(afterColumnId.intValue())));
             }
         }
     }

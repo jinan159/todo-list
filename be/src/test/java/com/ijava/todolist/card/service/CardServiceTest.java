@@ -1,6 +1,8 @@
 package com.ijava.todolist.card.service;
 
 import com.ijava.todolist.card.controller.dto.CardCreateRequest;
+import com.ijava.todolist.card.controller.dto.CardMoveRequest;
+import com.ijava.todolist.card.controller.dto.CardMovedResponse;
 import com.ijava.todolist.card.controller.dto.CardUpdateRequest;
 import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.exception.CardNotFoundException;
@@ -18,6 +20,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 class CardServiceTest {
@@ -212,6 +216,35 @@ class CardServiceTest {
                 assertThat(updatedCard.getContent()).isEqualTo(updatedContent);
                 assertThat(updatedCard.getCreatedDate()).isEqualTo(savedCard.getCreatedDate());
                 assertThat(updatedCard.getModifiedDate()).isAfter(savedCard.getModifiedDate());
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("카드를 이동할 때")
+    class CardMoveTest {
+
+        @Nested
+        @DisplayName("카드 id, 칼러 id 가 정상적으로 들어오면")
+        class SuccessTest {
+
+            @Test
+            void 카드의_칼럼을_변경하고_변경_전후_칼럼_id_정보를_반환한다() {
+                // given
+                Card card = saveCard();
+                Long cardId = card.getId();
+                Long beforeColumnId = card.getColumnsId();
+                Long afterColumnId = 2L;
+                CardMoveRequest cardMoveRequest = new CardMoveRequest(cardId, afterColumnId);
+
+                // when
+                CardMovedResponse movedResponse = cardService.moveCard(cardMoveRequest);
+
+                // then
+                assertThat(movedResponse).isNotNull();
+                assertThat(movedResponse.getCardId()).isEqualTo(cardId);
+                assertThat(movedResponse.getOldColumn()).isEqualTo(beforeColumnId);
+                assertThat(movedResponse.getNewColumn()).isEqualTo(afterColumnId);
             }
         }
     }
