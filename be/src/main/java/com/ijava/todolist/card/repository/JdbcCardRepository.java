@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -19,15 +20,26 @@ public class JdbcCardRepository implements CardRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public JdbcCardRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource);
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
         simpleJdbcInsert.withTableName("card").usingGeneratedKeyColumns("id");
     }
 
     @Override
     public Card save(Card card) {
+        if (card.getId() == null) {
+            return insertCard(card);
+        }
+
+        return updateCard(card);
+    }
+
+    private Card insertCard(Card card) {
         try {
             Number number = simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(card));
 
@@ -36,6 +48,29 @@ public class JdbcCardRepository implements CardRepository {
             card.setId(number.longValue());
 
             return card;
+        } catch (Exception e) {
+            throw new CardNotSavedException();
+        }
+    }
+
+    private Card updateCard(Card card) {
+        try {
+            String updateCardSql = "UPDATE card SET \n" +
+                    "    title = :title, \n" +
+                    "    content = :content, \n" +
+                    "    columns_id = :columnsId, \n" +
+                    "    modified_date = :modifiedDate \n" +
+                    "  WHERE id = :id";
+
+            log.debug(updateCardSql);
+
+            int update = namedParameterJdbcTemplate.update(updateCardSql, new BeanPropertySqlParameterSource(card));
+
+            if (update > 0) {
+                return card;
+            }
+
+            throw new CardNotSavedException();
         } catch (Exception e) {
             throw new CardNotSavedException();
         }

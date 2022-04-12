@@ -2,8 +2,8 @@ package com.ijava.todolist.card.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ijava.todolist.card.controller.dto.CardCreateRequest;
+import com.ijava.todolist.card.controller.dto.CardUpdateRequest;
 import com.ijava.todolist.card.domain.Card;
-import com.ijava.todolist.card.exception.CardNotSavedException;
 import com.ijava.todolist.card.service.CardService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,11 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,9 +21,9 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CardController.class)
@@ -118,7 +116,7 @@ class CardControllerTest {
                 Long columnId = 1L;
                 String requestBody = objectMapper.writeValueAsString(new CardCreateRequest(columnId, title, content));
                 Card expectedCard = createCard(title, content, columnId, LocalDateTime.now());
-                given(cardService.save(any())).willReturn(expectedCard);
+                given(cardService.saveNewCard(any())).willReturn(expectedCard);
 
 
                 // when
@@ -138,7 +136,42 @@ class CardControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("카드 수정 요청이 들어왔을 때(PUT /cards/:id)")
+    class PUTCardsTest {
+
+        @Nested
+        @DisplayName("카드 id, 제목이 정상적으로 들어오면")
+        class SuccessTest {
+
+            @Test
+            void 수정하고_204_상태코드를_반환한다() throws Exception {
+                // given
+                Long cardId = 1L;
+                String title = "카드 제목";
+                String content = "카드 내용입니다.";
+                Long columnId = 1L;
+                String requestBody = objectMapper.writeValueAsString(new CardUpdateRequest(title, content));
+                given(cardService.updateCard(anyLong(), any())).willReturn(createCard(cardId, title, content, columnId, LocalDateTime.now()));
+
+                // when
+                ResultActions result = mvc.perform(
+                        put("/cards/" + cardId.intValue())
+                                .content(requestBody)
+                                .contentType(MediaType.APPLICATION_JSON)
+                );
+
+                // then
+                result.andExpect(status().isNoContent());
+            }
+        }
+    }
+
     private Card createCard(String title, String content, Long columnId, LocalDateTime createdDate) {
-        return new Card(1L, title, content, columnId, createdDate, createdDate);
+        return createCard(1L, title, content, columnId, createdDate);
+    }
+
+    private Card createCard(Long cardId, String title, String content, Long columnId, LocalDateTime createdDate) {
+        return new Card(cardId, title, content, columnId, createdDate, createdDate);
     }
 }

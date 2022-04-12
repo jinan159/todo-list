@@ -1,6 +1,7 @@
 package com.ijava.todolist.card.service;
 
 import com.ijava.todolist.card.controller.dto.CardCreateRequest;
+import com.ijava.todolist.card.controller.dto.CardUpdateRequest;
 import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.exception.CardNotFoundException;
 import com.ijava.todolist.card.repository.CardRepository;
@@ -62,7 +63,7 @@ public class CardService {
      * @return
      */
     @Transactional
-    public Card save(CardCreateRequest request) {
+    public Card saveNewCard(CardCreateRequest request) {
         LocalDateTime createdDate = LocalDateTime.now();
         Card newCard = new Card(request.getTitle(), request.getContent(), request.getColumnId(), createdDate, createdDate);
         Card savedCard = cardRepository.save(newCard);
@@ -70,5 +71,27 @@ public class CardService {
         historyService.store(savedCard.getId(), savedCard.getColumnsId(), Action.ADD, LocalDateTime.now());
 
         return savedCard;
+    }
+
+    /**
+     * 카드 수정 요청 시, 존재하는 카드이면 수정후, 수정된 카드를 반환함
+     * @param cardId
+     * @param updateRequest
+     * @return
+     */
+    public Card updateCard(Long cardId, CardUpdateRequest updateRequest) {
+        Card savedCard = cardRepository.findById(cardId)
+                .orElseThrow(CardNotFoundException::new);
+
+        Card updatedCard = new Card(
+                savedCard.getId(),
+                updateRequest.getTitle(),
+                updateRequest.getContent(),
+                savedCard.getColumnsId(),
+                savedCard.getCreatedDate(),
+                LocalDateTime.now()
+        );
+
+        return cardRepository.save(updatedCard);
     }
 }

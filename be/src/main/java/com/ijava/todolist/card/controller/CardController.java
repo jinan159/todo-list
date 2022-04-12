@@ -2,9 +2,11 @@ package com.ijava.todolist.card.controller;
 
 import com.ijava.todolist.card.controller.dto.CardCreateRequest;
 import com.ijava.todolist.card.controller.dto.CardResponse;
+import com.ijava.todolist.card.controller.dto.CardUpdateRequest;
 import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.service.CardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
@@ -28,7 +30,13 @@ public class CardController {
 
     @PostMapping("/cards")
     public CardResponse createCard(@RequestBody CardCreateRequest cardCreateRequest) {
-        Card save = cardService.save(cardCreateRequest);
+        Card save = cardService.saveNewCard(cardCreateRequest);
         return CardResponse.from(save);
+    }
+
+    @PutMapping("/cards/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void updateCard(@PathVariable("id") Long id, @RequestBody CardUpdateRequest updateRequest) {
+        cardService.updateCard(id, updateRequest);
     }
 }
