@@ -61,7 +61,6 @@ public class CardService {
      * @param request
      * @return
      */
-    @Transactional
     public Card saveNewCard(CardCreateRequest request) {
         LocalDateTime createdDate = LocalDateTime.now();
         Card newCard = Card.builder()
@@ -94,18 +93,14 @@ public class CardService {
         return cardRepository.save(updateTargetCard);
     }
 
-    public CardMovedResponse moveCard(CardMoveRequest cardMoveRequest) {
+    public Card moveCard(CardMoveRequest cardMoveRequest) {
         Card moveTargetCard = cardRepository.findById(cardMoveRequest.getCardId())
                 .orElseThrow(CardNotFoundException::new);
-
-        Long oldColumnId = moveTargetCard.getColumnsId();
 
         moveTargetCard.moveColumn(cardMoveRequest.getColumnId());
         moveTargetCard.changeModifiedDate();
 
-        Card updatedCard = cardRepository.save(moveTargetCard);
-
-        return new CardMovedResponse(updatedCard.getId(), oldColumnId, updatedCard.getColumnsId());
+        return cardRepository.save(moveTargetCard);
     }
 
     public Long deleteCard(Long id) {

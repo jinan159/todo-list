@@ -238,13 +238,12 @@ class CardServiceTest {
                 CardMoveRequest cardMoveRequest = new CardMoveRequest(cardId, afterColumnId);
 
                 // when
-                CardMovedResponse movedResponse = cardService.moveCard(cardMoveRequest);
+                Card movedCard = cardService.moveCard(cardMoveRequest);
 
                 // then
-                assertThat(movedResponse).isNotNull();
-                assertThat(movedResponse.getCardId()).isEqualTo(cardId);
-                assertThat(movedResponse.getOldColumn()).isEqualTo(beforeColumnId);
-                assertThat(movedResponse.getNewColumn()).isEqualTo(afterColumnId);
+                assertThat(movedCard).isNotNull();
+                assertThat(movedCard.getId()).isEqualTo(cardId);
+                assertThat(movedCard.getColumnsId()).isEqualTo(afterColumnId);
             }
         }
     }

@@ -1,11 +1,9 @@
 package com.ijava.todolist.card.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ijava.todolist.card.controller.dto.CardCreateRequest;
-import com.ijava.todolist.card.controller.dto.CardMoveRequest;
-import com.ijava.todolist.card.controller.dto.CardMovedResponse;
-import com.ijava.todolist.card.controller.dto.CardUpdateRequest;
+import com.ijava.todolist.card.controller.dto.*;
 import com.ijava.todolist.card.domain.Card;
+import com.ijava.todolist.card.service.CardActionService;
 import com.ijava.todolist.card.service.CardService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -38,6 +36,9 @@ class CardControllerTest {
 
     @MockBean
     private CardService cardService;
+
+    @MockBean
+    private CardActionService cardActionService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -114,9 +115,8 @@ class CardControllerTest {
                 String content = "카드 내용입니다.";
                 Long columnId = 1L;
                 String requestBody = objectMapper.writeValueAsString(new CardCreateRequest(columnId, title, content));
-                Card expectedCard = createCard(title, content, columnId, LocalDateTime.now());
-                given(cardService.saveNewCard(any())).willReturn(expectedCard);
-
+                CardResponse cardResponse = CardResponse.from(createCard(title, content, columnId, LocalDateTime.now()));
+                given(cardActionService.add(any())).willReturn(cardResponse);
 
                 // when
                 ResultActions result = mvc.perform(
@@ -128,9 +128,9 @@ class CardControllerTest {
                 // then
                 result.andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.cardId", is(expectedCard.getId().intValue())))
-                        .andExpect(jsonPath("$.title", is(expectedCard.getTitle())))
-                        .andExpect(jsonPath("$.content", is(expectedCard.getContent())));
+                        .andExpect(jsonPath("$.cardId", is(cardResponse.getCardId().intValue())))
+                        .andExpect(jsonPath("$.title", is(cardResponse.getTitle())))
+                        .andExpect(jsonPath("$.content", is(cardResponse.getContent())));
             }
         }
     }
@@ -151,7 +151,7 @@ class CardControllerTest {
                 String content = "카드 내용입니다.";
                 Long columnId = 1L;
                 String requestBody = objectMapper.writeValueAsString(new CardUpdateRequest(title, content));
-                given(cardService.updateCard(anyLong(), any())).willReturn(createCard(cardId, title, content, columnId, LocalDateTime.now()));
+                given(cardActionService.update(anyLong(), any())).willReturn(createCard(cardId, title, content, columnId, LocalDateTime.now()));
 
                 // when
                 ResultActions result = mvc.perform(
@@ -181,7 +181,7 @@ class CardControllerTest {
                 Long beforeColumnId = 1L;
                 Long afterColumnId = 2L;
                 String requestBody = objectMapper.writeValueAsString(new CardMoveRequest(cardId, beforeColumnId));
-                given(cardService.moveCard(any())).willReturn(new CardMovedResponse(cardId, beforeColumnId, afterColumnId));
+                given(cardActionService.move(any())).willReturn(new CardMovedResponse(cardId, beforeColumnId, afterColumnId));
 
                 // when
                 ResultActions result = mvc.perform(

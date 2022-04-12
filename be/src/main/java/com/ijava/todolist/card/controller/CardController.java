@@ -2,6 +2,7 @@ package com.ijava.todolist.card.controller;
 
 import com.ijava.todolist.card.controller.dto.*;
 import com.ijava.todolist.card.domain.Card;
+import com.ijava.todolist.card.service.CardActionService;
 import com.ijava.todolist.card.service.CardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class CardController {
 
     private final CardService cardService;
+    private final CardActionService cardActionService;
 
     @GetMapping("/cards")
     public List<CardResponse> cardList(@RequestParam(value="columnId") Long columnId) {
@@ -28,23 +30,22 @@ public class CardController {
 
     @PostMapping("/cards")
     public CardResponse createCard(@RequestBody CardCreateRequest cardCreateRequest) {
-        Card save = cardService.saveNewCard(cardCreateRequest);
-        return CardResponse.from(save);
+        return cardActionService.add(cardCreateRequest);
     }
 
     @PutMapping("/cards/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void updateCard(@PathVariable("id") Long id, @RequestBody CardUpdateRequest updateRequest) {
-        cardService.updateCard(id, updateRequest);
+        cardActionService.update(id, updateRequest);
     }
 
     @PatchMapping("/cards")
     public CardMovedResponse moveCard(@RequestBody CardMoveRequest cardMoveRequest) {
-        return cardService.moveCard(cardMoveRequest);
+        return cardActionService.move(cardMoveRequest);
     }
 
     @DeleteMapping("/cards/{id}")
     public Long deleteCard(@PathVariable("id") Long id) {
-        return cardService.deleteCard(id);
+        return cardActionService.delete(id);
     }
 }
