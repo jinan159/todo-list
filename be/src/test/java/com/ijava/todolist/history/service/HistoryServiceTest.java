@@ -106,8 +106,7 @@ class HistoryServiceTest {
             Throwable thrown = catchThrowable(() -> historyService.store(
                 1L,
                 3L,
-                null,
-                LocalDateTime.parse("2022-04-05T20:11:11", DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                null)
             );
 
             // then
@@ -129,8 +128,7 @@ class HistoryServiceTest {
             Throwable thrown = catchThrowable(() -> historyService.store(
                 1L,
                 3L,
-                Action.ADD,
-                LocalDateTime.parse("2022-04-05T20:11:11", DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                Action.ADD)
             );
 
             // then

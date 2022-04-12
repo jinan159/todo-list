@@ -18,10 +18,10 @@ public class HistoryService {
     private final HistoryRepository historyRepository;
     private final UserService userService;
 
-    public void store(Long cardId, Long columnsId, Action action, LocalDateTime createdDate) {
+    public void store(Long cardId, Long columnsId, Action action) {
         try {
             Long userId = getDefaultUserId();
-            History history = new History(userId, cardId, columnsId, action, createdDate);
+            History history = new History(userId, cardId, columnsId, action, LocalDateTime.now());
             historyRepository.save(history);
         } catch (NullPointerException e) {
             throw new HistoryNotSavedException();
