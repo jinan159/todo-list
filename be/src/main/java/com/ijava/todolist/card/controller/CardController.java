@@ -45,7 +45,7 @@ public class CardController {
     }
 
     @DeleteMapping("/cards/{id}")
-    public Long deleteCard(@PathVariable("id") Long id) {
+    public CardDeleteResponse deleteCard(@PathVariable("id") Long id) {
         return cardActionService.delete(id);
     }
 }

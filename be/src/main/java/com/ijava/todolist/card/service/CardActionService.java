@@ -40,11 +40,11 @@ public class CardActionService {
         return new CardMovedResponse(movedCard.getId(), oldColumnId, movedCard.getColumnsId());
     }
 
-    public Long delete(Long cardId) {
+    public CardDeleteResponse delete(Long cardId) {
         Card deleteTargetCard = cardService.findCardById(cardId);
         historyService.store(deleteTargetCard.getId(), deleteTargetCard.getColumnsId(), Action.REMOVE);
 
-        return cardService.deleteCard(cardId);
+        return new CardDeleteResponse(cardService.deleteCard(cardId));
     }
 
 
