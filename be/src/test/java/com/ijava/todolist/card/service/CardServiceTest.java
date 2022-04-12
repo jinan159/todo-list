@@ -185,12 +185,6 @@ class CardServiceTest {
         }
     }
 
-    // 카드를 수정할 때
-        // 존재하는 카드이면
-            // 수정하고, 수정된 카드를 반환한다
-        // 존재하지 않는 카드이면
-            // 수정되지 않고 예외가 발생한다
-
     @Nested
     @DisplayName("카드를 수정할 때")
     class CardUpdateTest {
@@ -218,21 +212,6 @@ class CardServiceTest {
                 assertThat(updatedCard.getContent()).isEqualTo(updatedContent);
                 assertThat(updatedCard.getCreatedDate()).isEqualTo(savedCard.getCreatedDate());
                 assertThat(updatedCard.getModifiedDate()).isAfter(savedCard.getModifiedDate());
-            }
-        }
-
-        @Nested
-        @DisplayName("존재하지 않는 카드이면")
-        class CardNotExistTest{
-
-            @Test
-            void 수정되지_않고_예외가_발생한다() {
-                // given
-
-                // when
-
-                // then
-
             }
         }
     }
