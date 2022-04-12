@@ -1,6 +1,5 @@
 package com.ijava.todolist.card.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ijava.todolist.card.controller.dto.CardCreateRequest;
 import com.ijava.todolist.card.controller.dto.CardMoveRequest;
@@ -32,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(CardController.class)
 class CardControllerTest {
 
-    private static final String CARD_CREATE_URL = "/cards";
+    private static final String CARDS_URL = "/cards";
 
     @Autowired
     private MockMvc mvc;
@@ -57,14 +56,14 @@ class CardControllerTest {
                 DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
                 LocalDateTime date = LocalDateTime.of(2022, 4, 5, 20, 40, 0);
                 List<Card> cards = List.of(
-                        new Card(1L, "제목1", "카드 내용2", 1L, date, date),
-                        new Card(2L, "제목2", "카드 내용2", 1L, date, date)
+                        createCard(1L, "제목1", "카드 내용2", 1L, date),
+                        createCard(2L, "제목2", "카드 내용2", 1L, date)
                 );
                 given(cardService.findCardList(any())).willReturn(cards);
 
                 // when
                 ResultActions result = mvc.perform(
-                        get("/cards")
+                        get(CARDS_URL)
                                 .queryParam("columnId", "1")
                 );
 
@@ -91,11 +90,8 @@ class CardControllerTest {
 
             @Test
             void BadRequest_상태코드를_반환한다() throws Exception {
-                // given
-                String url = "/cards";
-
                 // when
-                ResultActions result = mvc.perform(get(url));
+                ResultActions result = mvc.perform(get(CARDS_URL));
 
                 // then
                 result.andExpect(status().isBadRequest());
@@ -124,7 +120,7 @@ class CardControllerTest {
 
                 // when
                 ResultActions result = mvc.perform(
-                        post(CARD_CREATE_URL)
+                        post(CARDS_URL)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody)
                 );
@@ -159,7 +155,7 @@ class CardControllerTest {
 
                 // when
                 ResultActions result = mvc.perform(
-                        put("/cards/" + cardId.intValue())
+                        put(CARDS_URL + "/" + cardId.intValue())
                                 .content(requestBody)
                                 .contentType(MediaType.APPLICATION_JSON)
                 );
@@ -189,7 +185,7 @@ class CardControllerTest {
 
                 // when
                 ResultActions result = mvc.perform(
-                        patch("/cards")
+                        patch(CARDS_URL)
                                 .content(requestBody)
                                 .contentType(MediaType.APPLICATION_JSON)
                 );
@@ -211,6 +207,13 @@ class CardControllerTest {
     }
 
     private Card createCard(Long cardId, String title, String content, Long columnId, LocalDateTime createdDate) {
-        return new Card(cardId, title, content, columnId, createdDate, createdDate);
+        return Card.builder()
+                .id(cardId)
+                .title(title)
+                .content(content)
+                .columnsId(columnId)
+                .createdDate(createdDate)
+                .modifiedDate(createdDate)
+                .build();
     }
 }

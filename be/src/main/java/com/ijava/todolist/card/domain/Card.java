@@ -1,35 +1,37 @@
 package com.ijava.todolist.card.domain;
 
+import com.ijava.todolist.common.domain.Deleted;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 
 @Getter
 @EqualsAndHashCode
+@Builder
 public class Card {
 
     private Long id;
     private String title;
     private String content;
     private Long columnsId;
+    private Deleted deleted;
     private final LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-    public Card(Long id, String title, String content, Long columnsId, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public Card(Long id, String title, String content, Long columnsId, Deleted deleted, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.columnsId = columnsId;
+        this.deleted = deleted;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
-    }
 
-    public Card(String title, String content, Long columnsId, LocalDateTime createdDate, LocalDateTime modifiedDate) {
-        this(null, title, content, columnsId, createdDate, modifiedDate);
+        if (deleted == null) {
+            this.deleted = Deleted.N;
+        }
     }
 
     public void setId(Long id) {
@@ -50,6 +52,10 @@ public class Card {
 
     public void changeModifiedDate() {
         this.modifiedDate = LocalDateTime.now();
+    }
+
+    public void delete() {
+        deleted = Deleted.Y;
     }
 
 }

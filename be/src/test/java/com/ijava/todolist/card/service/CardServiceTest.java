@@ -255,6 +255,12 @@ class CardServiceTest {
 
     private Card saveCardWithColumnsId(Long columnsId) {
         LocalDateTime now = LocalDateTime.now();
-        return cardRepository.save(new Card("제목", "내용", columnsId, now, now));
+        return cardRepository.save(Card.builder()
+                .title("제목")
+                .content("내용")
+                .columnsId(columnsId)
+                .createdDate(now)
+                .modifiedDate(now)
+                .build());
     }
 }

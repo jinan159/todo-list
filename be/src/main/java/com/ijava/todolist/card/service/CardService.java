@@ -7,8 +7,6 @@ import com.ijava.todolist.card.controller.dto.CardUpdateRequest;
 import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.exception.CardNotFoundException;
 import com.ijava.todolist.card.repository.CardRepository;
-import com.ijava.todolist.history.Action;
-import com.ijava.todolist.history.service.HistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +22,6 @@ public class CardService {
     private final static int CARD_COUNT_DEFAULT = 0;
 
     private final CardRepository cardRepository;
-    private final HistoryService historyService;
 
     /**
      * 특정 칼럼에 속한 카드 목록 조회
@@ -68,10 +64,15 @@ public class CardService {
     @Transactional
     public Card saveNewCard(CardCreateRequest request) {
         LocalDateTime createdDate = LocalDateTime.now();
-        Card newCard = new Card(request.getTitle(), request.getContent(), request.getColumnId(), createdDate, createdDate);
-        Card savedCard = cardRepository.save(newCard);
+        Card newCard = Card.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .columnsId(request.getColumnId())
+                .createdDate(createdDate)
+                .modifiedDate(createdDate)
+                .build();
 
-        historyService.store(savedCard.getId(), savedCard.getColumnsId(), Action.ADD, LocalDateTime.now());
+        Card savedCard = cardRepository.save(newCard);
 
         return savedCard;
     }
@@ -105,5 +106,15 @@ public class CardService {
         Card updatedCard = cardRepository.save(moveTargetCard);
 
         return new CardMovedResponse(updatedCard.getId(), oldColumnId, updatedCard.getColumnsId());
+    }
+
+    public Long deleteCard(Long id) {
+        Card deleteTargetCard = findCardById(id);
+        deleteTargetCard.delete();
+        deleteTargetCard.changeModifiedDate();
+
+        cardRepository.save(deleteTargetCard);
+
+        return deleteTargetCard.getId();
     }
 }

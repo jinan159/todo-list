@@ -3,6 +3,7 @@ CREATE TABLE `card` (
     `columns_id` bigint,
     `title` varchar(255),
     `content` varchar(500),
+    `deleted` char(1),
     `created_date` timestamp,
     `modified_date` timestamp
 );

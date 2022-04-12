@@ -42,4 +42,9 @@ public class CardController {
     public CardMovedResponse moveCard(@RequestBody CardMoveRequest cardMoveRequest) {
         return cardService.moveCard(cardMoveRequest);
     }
+
+    @DeleteMapping("/cards/{id}")
+    public Long deleteCard(@PathVariable("id") Long id) {
+        return cardService.deleteCard(id);
+    }
 }
