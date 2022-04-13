@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		002AB86B28004634002E9E48 /* TodoCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002AB86A28004634002E9E48 /* TodoCreationViewController.swift */; };
+		0065B457280663A80072CDB1 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065B456280663A80072CDB1 /* Activity.swift */; };
 		00C0E62927FEB819000EBAAD /* TodoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C0E62827FEB819000EBAAD /* TodoCell.swift */; };
 		00FB63612804384C00515153 /* TodoCreationViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00FB63602804384C00515153 /* TodoCreationViewController.storyboard */; };
 		E40486602803BE7D00217657 /* Logger+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E404865F2803BE7D00217657 /* Logger+Extensions.swift */; };
@@ -32,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		002AB86A28004634002E9E48 /* TodoCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TodoCreationViewController.swift; path = TodoApp/Controllers/TodoCreationViewController.swift; sourceTree = SOURCE_ROOT; };
+		0065B456280663A80072CDB1 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		00C0E62827FEB819000EBAAD /* TodoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoCell.swift; sourceTree = "<group>"; };
 		00FB63602804384C00515153 /* TodoCreationViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TodoCreationViewController.storyboard; sourceTree = "<group>"; };
 		E404865F2803BE7D00217657 /* Logger+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+Extensions.swift"; sourceTree = "<group>"; };
@@ -89,6 +91,9 @@
 				E4910626280674C7003F074B /* ColumnRepository.swift */,
 				E4D8C9612806896F00E2CB96 /* TodoRepository.swift */,
 				E4D8C9642806987800E2CB96 /* TodoListViewModel.swift */,
+				E44F93FA28040E1200E363D3 /* Todo.swift */,
+				E427B05828051EB800C86F17 /* Column.swift */,
+				0065B456280663A80072CDB1 /* Activity.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -259,6 +264,7 @@
 				E4D8C9622806896F00E2CB96 /* TodoRepository.swift in Sources */,
 				E4B67F5B27FAAA05009397B2 /* TodoListContainerViewController.swift in Sources */,
 				002AB86B28004634002E9E48 /* TodoCreationViewController.swift in Sources */,
+				0065B457280663A80072CDB1 /* Activity.swift in Sources */,
 				00C0E62927FEB819000EBAAD /* TodoCell.swift in Sources */,
 				E4D1B17327FC20D200525BA2 /* ActivityListViewController.swift in Sources */,
 				E4910627280674C7003F074B /* ColumnRepository.swift in Sources */,
