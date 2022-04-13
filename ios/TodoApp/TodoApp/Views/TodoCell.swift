@@ -14,21 +14,22 @@ class TodoCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        configureUI()
+        self.configureUI()
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        configureUI()
+        self.configureUI()
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
     }
     
     private func configureUI() {
-        self.cardView?.layer.cornerRadius = 10
+        self.contentView.layer.cornerRadius = 10
+        self.contentView.clipsToBounds = true
+        self.contentView.layer.cornerCurve = .continuous
     }
     
 }
