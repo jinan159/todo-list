@@ -126,7 +126,7 @@ class CardControllerTest {
                 );
 
                 // then
-                result.andExpect(status().isOk())
+                result.andExpect(status().isCreated())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.cardId", is(cardResponse.getCardId().intValue())))
                         .andExpect(jsonPath("$.title", is(cardResponse.getTitle())))

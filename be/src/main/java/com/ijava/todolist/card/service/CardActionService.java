@@ -18,14 +18,14 @@ public class CardActionService {
 
     public CardResponse add(CardCreateRequest createRequest) {
         Card savedCard = cardService.saveNewCard(createRequest);
-        historyService.store(savedCard.getId(), savedCard.getColumnsId(), Action.ADD);
+        historyService.store(savedCard.getId(), savedCard.getColumnsId(), savedCard.getColumnsId(), Action.ADD);
 
         return CardResponse.from(savedCard);
     }
 
     public Card update(Long cardId, CardUpdateRequest updateRequest) {
         Card updatedCard = cardService.updateCard(cardId, updateRequest);
-        historyService.store(updatedCard.getId(), updatedCard.getColumnsId(), Action.UPDATE);
+        historyService.store(updatedCard.getId(), updatedCard.getColumnsId(), updatedCard.getColumnsId(), Action.UPDATE);
 
         return updatedCard;
     }
@@ -35,14 +35,14 @@ public class CardActionService {
                 .getId();
 
         Card movedCard = cardService.moveCard(cardMoveRequest);
-        historyService.store(movedCard.getId(), movedCard.getColumnsId(), Action.MOVE);
+        historyService.store(movedCard.getId(), oldColumnId, movedCard.getColumnsId(), Action.MOVE);
 
         return new CardMovedResponse(movedCard.getId(), oldColumnId, movedCard.getColumnsId());
     }
 
     public CardDeleteResponse delete(Long cardId) {
         Card deleteTargetCard = cardService.findCardById(cardId);
-        historyService.store(deleteTargetCard.getId(), deleteTargetCard.getColumnsId(), Action.REMOVE);
+        historyService.store(deleteTargetCard.getId(), deleteTargetCard.getColumnsId(), deleteTargetCard.getColumnsId(), Action.REMOVE);
 
         return new CardDeleteResponse(cardService.deleteCard(cardId));
     }

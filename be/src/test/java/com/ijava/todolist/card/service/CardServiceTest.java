@@ -2,7 +2,6 @@ package com.ijava.todolist.card.service;
 
 import com.ijava.todolist.card.controller.dto.CardCreateRequest;
 import com.ijava.todolist.card.controller.dto.CardMoveRequest;
-import com.ijava.todolist.card.controller.dto.CardMovedResponse;
 import com.ijava.todolist.card.controller.dto.CardUpdateRequest;
 import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.exception.CardNotFoundException;
@@ -21,7 +20,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 class CardServiceTest {

@@ -2,14 +2,12 @@ package com.ijava.todolist.card.service;
 
 import com.ijava.todolist.card.controller.dto.CardCreateRequest;
 import com.ijava.todolist.card.controller.dto.CardMoveRequest;
-import com.ijava.todolist.card.controller.dto.CardMovedResponse;
 import com.ijava.todolist.card.controller.dto.CardUpdateRequest;
 import com.ijava.todolist.card.domain.Card;
 import com.ijava.todolist.card.exception.CardNotFoundException;
 import com.ijava.todolist.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
