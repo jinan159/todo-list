@@ -18,8 +18,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let todoContainer = UIStoryboard(name: "TodoListContainerViewController", bundle: nil).instantiateInitialViewController() as? TodoListContainerViewController
         
+        todoContainer?.viewControllers = [
+            UIStoryboard(name: "TodoListViewController", bundle: nil).instantiateInitialViewController()!,
+            UIStoryboard(name: "TodoListViewController", bundle: nil).instantiateInitialViewController()!,
+            UIStoryboard(name: "TodoListViewController", bundle: nil).instantiateInitialViewController()!
+        ]
+        
         // TODO: Column 데이터 Fetching
-        // TODO: 컨테이너에 TodoListViewController 주입하기
 
         self.window?.rootViewController = todoContainer
         self.window?.makeKeyAndVisible()

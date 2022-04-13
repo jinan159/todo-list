@@ -75,6 +75,7 @@ extension TodoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .destructive, title: "Delete") { [weak self] _, _, completion in
             self?.viewModel.remove(at: indexPath.section)
+            self?.badgeLabel?.text = String(self?.viewModel.count ?? 0)
             tableView.deleteSections(IndexSet(integer: indexPath.section), with: .fade)
             completion(true)
         }
