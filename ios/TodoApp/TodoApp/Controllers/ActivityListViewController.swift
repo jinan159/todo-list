@@ -15,6 +15,7 @@ class ActivityListViewController: UITableViewController {
         super.viewDidLoad()
         
         self.configureTableView()
+        NetworkHandler.getData(resource: "https://1dc4c2f3-00b4-446d-a22a-d6920eaee622.mock.pstmn.io/history")
     }
     
     private func configureTableView() {
