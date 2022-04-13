@@ -10,7 +10,9 @@ import UIKit
 class TodoCell: UITableViewCell {
     static let identifier = "TodoCell"
     
-    @IBOutlet private weak var cardView: UIView!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var contentLabel: UILabel!
+    @IBOutlet private weak var authorLabel: UILabel!
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -32,4 +34,15 @@ class TodoCell: UITableViewCell {
         self.contentView.layer.cornerCurve = .continuous
     }
     
+    func setTitle(text: String) {
+        self.titleLabel?.text = text
+    }
+    
+    func setContent(text: String) {
+        self.contentLabel?.text = text
+    }
+    
+    func setAuthor(text: String) {
+        self.authorLabel?.text = text
+    }
 }

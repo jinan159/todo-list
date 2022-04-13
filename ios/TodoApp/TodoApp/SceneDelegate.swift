@@ -13,22 +13,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
-        
+
         self.window = UIWindow(windowScene: scene)
         
         let todoContainer = UIStoryboard(name: "TodoListContainerViewController", bundle: nil).instantiateInitialViewController() as? TodoListContainerViewController
         
-        todoContainer?.viewControllers = [
-            UIStoryboard(name: "TodoListViewController", bundle: nil).instantiateInitialViewController()!,
-            UIStoryboard(name: "TodoListViewController", bundle: nil).instantiateInitialViewController()!,
-            UIStoryboard(name: "TodoListViewController", bundle: nil).instantiateInitialViewController()!
-        ]
-        
-        // TODO: Column 데이터 Fetching
-
+        ColumnRepository().fetchColumn { columns in
+            DispatchQueue.main.async {
+                let storyboard = UIStoryboard(name: "TodoListViewController", bundle: nil)
+                
+                let viewControllers: [TodoListViewController] = columns.compactMap({ column in
+                    guard let todoListViewController = storyboard.instantiateInitialViewController() as? TodoListViewController else { return nil }
+                    
+                    let todoRepository = TodoRepository()
+                    
+                    todoListViewController.viewModel = TodoListViewModel(entity: column, repository: todoRepository)
+                    
+                    return todoListViewController
+                })
+                
+                todoContainer?.viewControllers = viewControllers
+            }
+        }
+     
         self.window?.rootViewController = todoContainer
         self.window?.makeKeyAndVisible()
-        
     }
 }
 

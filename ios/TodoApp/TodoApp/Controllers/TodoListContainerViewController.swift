@@ -15,13 +15,16 @@ class TodoListContainerViewController: UIViewController {
     @IBOutlet private weak var closeButton: UIButton!
     @IBOutlet private weak var columnStack: UIStackView!
     
-    var viewControllers = [UIViewController]()
+    var viewControllers = [UIViewController]() {
+        didSet {
+            self.configureColumns()
+        }
+    }
     
     // MARK: -  Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureUI()
-        self.configureColumns()
     }
 
     // MARK: - UI Configuration
