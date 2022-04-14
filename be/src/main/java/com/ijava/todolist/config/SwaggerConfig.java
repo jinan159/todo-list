@@ -10,14 +10,6 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public GroupedOpenApi api() {
-        return GroupedOpenApi.builder()
-                .group("todo-list")
-                .pathsToMatch("/**")
-                .build();
-    }
-
-    @Bean
     public OpenAPI todoListOpenApi() {
         return new OpenAPI()
                 .info(new Info()
