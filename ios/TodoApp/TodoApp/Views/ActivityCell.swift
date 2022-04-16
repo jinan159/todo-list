@@ -85,7 +85,33 @@ class ActivityCell: UITableViewCell {
     }
     
     func setFooterText(_ text: String) {
-        self.footerLabel.text = text
+//        self.footerLabel.text = text
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone?
+        let oldDate = dateFormatter.date(from: text)
+        guard let oldDate = oldDate else {
+            return
+        }
+        let timeInterval = oldDate.timeIntervalSinceNow
+        var result = ""
+        let absInterval = abs(timeInterval)
+        switch absInterval {
+        case 0..<60:
+            result = "1분 전"
+        case 60..<3600:
+            let minute = absInterval / 60
+            result = "\(Int(minute))분 전"
+        case 3600..<86400:
+            let hour = absInterval / 3600
+            result = "\(Int(hour))시간 전"
+        case 86400..<Double.greatestFiniteMagnitude :
+            let day = absInterval / 86400
+            result = "\(Int(day))일 전"
+        default:
+            result = "\(Int(absInterval))초 전"
+        }
+        self.footerLabel.text = result
     }
     // MARK: - 중요 키워드 집중
     func setBodyText(_ activity: ActivityBody) {
