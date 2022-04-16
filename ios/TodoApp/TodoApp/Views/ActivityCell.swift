@@ -117,7 +117,7 @@ class ActivityCell: UITableViewCell {
     func setBodyText(_ activity: ActivityBody) {
         self.bodyLabel.text = String(activity.text)
         guard let targetText = bodyLabel.text else { return }
-        let fontSize = UIFont.boldSystemFont(ofSize: 19)
+        let fontSize = UIFont.boldSystemFont(ofSize: 17)
         let attributedStr = NSMutableAttributedString(string: targetText)
         let item = activity.activity
         var actionString: String {
