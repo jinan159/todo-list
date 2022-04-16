@@ -87,9 +87,34 @@ class ActivityCell: UITableViewCell {
     func setFooterText(_ text: String) {
         self.footerLabel.text = text
     }
-    
-    func setBodyText(_ text: String) {
-        self.bodyLabel.text = text
+    // MARK: - 중요 키워드 집중
+    func setBodyText(_ activity: ActivityBody) {
+        self.bodyLabel.text = String(activity.text)
+        guard let targetText = bodyLabel.text else { return }
+        let fontSize = UIFont.boldSystemFont(ofSize: 19)
+        let attributedStr = NSMutableAttributedString(string: targetText)
+        let item = activity.activity
+        var actionString: String {
+            var string = ""
+            switch item.action {
+            case "ADD":
+                string = "등록"
+            case "MOVE":
+                string = "이동"
+            case "REMOVE":
+                string = "삭제"
+            case "UPDATE":
+                string = "수정"
+            default:
+                string = "default"
+            }
+            return string
+        }
+        attributedStr.addAttribute(.font, value: fontSize, range: (attributedStr.string as NSString).range(of: String(item.cardTitle)))
+        attributedStr.addAttribute(.font, value: fontSize, range: (attributedStr.string as NSString).range(of: String(item.oldColumnName)))
+        attributedStr.addAttribute(.font, value: fontSize, range: (attributedStr.string as NSString).range(of: String(item.newColumnName)))
+        attributedStr.addAttribute(.font, value: fontSize, range: (attributedStr.string as NSString).range(of: actionString))
+        bodyLabel.attributedText = attributedStr
     }
     
     func setBackgroundColor(_ color: UIColor) {
