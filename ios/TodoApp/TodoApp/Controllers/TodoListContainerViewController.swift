@@ -21,10 +21,14 @@ class TodoListContainerViewController: UIViewController {
         }
     }
     
+    var viewModel: TodoListContainerViewModel?
+    
     // MARK: -  Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureUI()
+        self.bind()
+        self.viewModel?.fetchData()
     }
 
     // MARK: - UI Configuration
@@ -61,5 +65,38 @@ class TodoListContainerViewController: UIViewController {
             self.drawerView.frame.origin = point
         }
     }
+    
+    private func bind() {
+        self.viewModel?.models.bind(listener: { [weak self] columns in
+            DispatchQueue.main.async {
+                let storyboard = UIStoryboard(name: "TodoListViewController", bundle: nil)
+                
+                let viewControllers: [TodoListViewController] = columns.compactMap({ column in
+                    guard let todoListViewController = storyboard.instantiateInitialViewController() as? TodoListViewController else { return nil }
+                    
+                    let repository = TodoRepository()
+                    let viewModel = TodoListViewModel(entity: column, repository: repository)
+                    todoListViewController.viewModel = viewModel
+                    
+                    return todoListViewController
+                })
+                
+                self?.viewControllers = viewControllers
+            }
+        })
+    }
 }
 
+extension TodoListContainerViewController: TodoListViewControllerDelegate {
+    func didStartDragging(from performer: TodoListViewController) {
+        guard let performer = performer as? Performer else { return }
+        self.viewModel?.performer = performer
+    }
+    
+    func didEndDropping() {
+        guard let performer = self.viewModel?.performer as? TodoListViewController else { return }
+        performer.reset()
+        
+        self.viewModel?.performer = nil
+    }
+}

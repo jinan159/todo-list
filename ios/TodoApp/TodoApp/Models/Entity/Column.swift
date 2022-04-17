@@ -1,5 +1,5 @@
 //
-//  Column.swift
+//  ColumnDTO.swift
 //  TodoApp
 //
 //  Created by 송태환 on 2022/04/12.

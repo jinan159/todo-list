@@ -18,24 +18,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let todoContainer = UIStoryboard(name: "TodoListContainerViewController", bundle: nil).instantiateInitialViewController() as? TodoListContainerViewController
         
-        ColumnRepository().fetchColumn { columns in
-            DispatchQueue.main.async {
-                let storyboard = UIStoryboard(name: "TodoListViewController", bundle: nil)
-                
-                let viewControllers: [TodoListViewController] = columns.compactMap({ column in
-                    guard let todoListViewController = storyboard.instantiateInitialViewController() as? TodoListViewController else { return nil }
-                    
-                    let todoRepository = TodoRepository()
-                    
-                    todoListViewController.viewModel = TodoListViewModel(entity: column, repository: todoRepository)
-                    
-                    return todoListViewController
-                })
-                
-                todoContainer?.viewControllers = viewControllers
-            }
-        }
-     
+        let repository = ColumnRepository()
+        todoContainer?.viewModel = TodoListContainerViewModel(repository: repository)
+        
         self.window?.rootViewController = todoContainer
         self.window?.makeKeyAndVisible()
     }
